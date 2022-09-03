@@ -20,6 +20,15 @@ io.on('connection', (socket) => {
     io.emit("join",name,id,players);
   });
 
+  socket.on("pos",(x,y)=>{
+    let p = players[socket.id];
+    if(!p) return;
+    p.x = x;
+    p.y = y;
+    let id = socket.id;
+    io.emit("pos",id,x,y);
+  });
+
   socket.on('disconnect', () => {
     delete players[socket.id];
     io.emit("leave",socket.id);

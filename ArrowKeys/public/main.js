@@ -4,6 +4,15 @@ can.width = 300;
 can.height = 100;
 const ctx = can.getContext("2d");
 
+let colors = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple"
+];
+
 let socket = io();
 
 let playerName = prompt("Enter your name");
@@ -11,6 +20,9 @@ let playerName = prompt("Enter your name");
 let players = [];
 let me;
 function createPlayer(name,sid,x,y,col){
+    for(let i = 0; i < players.length; i++){
+        if(players[i].name == name) return;
+    }
     let d = {
         name,
         sid,
@@ -32,18 +44,12 @@ socket.emit("initJoin",playerName,
     Math.floor(Math.random()*can.height),
     colors[Math.floor(Math.random()*colors.length)]
 );
-
-let colors = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "purple"
-];
 socket.on("join",(name,id,players1)=>{
-    for(let i = 0; i < players1.length; i++){
-        let p = players1[i];
+    let ok = Object.keys(players1);
+    for(let i = 0; i < ok.length; i++){
+        let id = ok[i];
+        let p = players1[id];
+        //if(id == socket.id) continue;
         createPlayer(
             p.name,
             p.id,
@@ -67,19 +73,23 @@ socket.on("leave",(id)=>{
         }
     }
 });
+socket.on("pos",(sid,x,y)=>{
+    if(sid == socket.id) return;
+    for(let i = 0; i < players.length; i++){
+        let p = players[i];
+        if(p.sid == sid){
+            p.x = x;
+            p.y = y;
+        }
+    }
+});
 
 let keys = {};
 function update(){
     requestAnimationFrame(update);
     ctx.clearRect(0,0,can.width,can.height);
 
-    if(!me) return;
-
     let speed = 0.1;
-    if(keys.arrowright) me.vx += speed;
-    if(keys.arrowleft) me.vx -= speed;
-    if(keys.arrowdown) me.vy += speed;
-    if(keys.arrowup) me.vy -= speed;
 
     for(let i = 0; i < players.length; i++){
         let obj = players[i];
@@ -101,6 +111,14 @@ function update(){
 
         ctx.fillStyle = obj.col;
         ctx.fillRect(Math.floor(obj.x),Math.floor(obj.y),10,10);
+    }
+
+    if(me){
+        if(keys.arrowright) me.vx += speed;
+        if(keys.arrowleft) me.vx -= speed;
+        if(keys.arrowdown) me.vy += speed;
+        if(keys.arrowup) me.vy -= speed;
+        socket.emit("pos",me.x,me.y);
     }
 }
 update();
