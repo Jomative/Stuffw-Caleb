@@ -6,7 +6,7 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 //Use the public folder when loading a website
-app.use(express.static(process.cwd() + '/public'));
+app.use(express.static(process.cwd() + '/ArrowKeys/public'));
 
 //This is our scene basically for all the players connected at one time
 let players = {};

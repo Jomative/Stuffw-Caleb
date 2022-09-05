@@ -1,0 +1,24 @@
+{
+  "name": "stuffw-caleb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jomative/Stuffw-Caleb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jomative/Stuffw-Caleb/issues"
+  },
+  "homepage": "https://github.com/Jomative/Stuffw-Caleb#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "socket.io": "^4.5.2"
+  }
+}
