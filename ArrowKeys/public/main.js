@@ -18,7 +18,7 @@ let colors = [
 let socket = io();
 
 //Uncomment the prompt if you want to enter a name for your player. I'll add a think where it renders a players name as a label beside them later
-let playerName = "";//prompt("Enter your name");
+let playerName = prompt("Enter your name");
 
 /**
  * This function searches through an array and returns true if any element in that array with a certain [prop] equals a value [val]
@@ -143,6 +143,7 @@ function update(){
         //Render the obj
         ctx.fillStyle = obj.col;
         ctx.fillRect(Math.floor(obj.x),Math.floor(obj.y),10,10);
+        ctx.fillText(obj.name, obj.x, (obj.y-5));
     }
 
     //Run events that only YOU have access to
