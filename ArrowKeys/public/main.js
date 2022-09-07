@@ -114,7 +114,7 @@ let keys = {};
 function update(){
     requestAnimationFrame(update);
     ctx.clearRect(0,0,can.width,can.height);
-
+    
     let speed = 0.1;
 
     for(let i = 0; i < players.length; i++){
