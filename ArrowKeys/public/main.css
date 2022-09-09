@@ -5,4 +5,6 @@ body{
     image-rendering:pixelated;
     width:100%;
     border-bottom:solid 1px gray;
+    /* Hide the mouse cursor */
+    cursor:none;
 }
