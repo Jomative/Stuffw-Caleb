@@ -21,20 +21,22 @@ io.on('connection', (socket) => {
     let sid = socket.id;
     let p = {
       sid,name,
-      x,y,col
+      x,y,col,
+      gunAng:0
     };
     players[sid] = p; //stores them by socket.id so we can retrieve them quickly later
     io.emit("join",name,sid,players);
   });
 
   //Listening for 'pos' from client that want to send their pos's over
-  socket.on("pos",(x,y)=>{
+  socket.on("pos",(x,y,gunAng)=>{
     let p = players[socket.id];
     if(!p) return;
     p.x = x; //we update the position data on the server so when someone connects later, they still are synced up
     p.y = y;
+    p.gunAng = gunAng;
     let sid = socket.id;
-    io.emit("pos",sid,x,y); //and then we emit it back to everyone connected - (io.emit sends to everyone, socket.emit sends it just back to the person who originally sent it)
+    io.emit("pos",sid,x,y,gunAng); //and then we emit it back to everyone connected - (io.emit sends to everyone, socket.emit sends it just back to the person who originally sent it)
   });
 
   //This event gets fired when someone closes the website or refreshes the page
