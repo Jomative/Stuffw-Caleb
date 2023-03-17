@@ -1,0 +1,5 @@
+canvas{
+    image-rendering: pixelated;
+    border: solid 1px gray;
+    width: 100%;
+}

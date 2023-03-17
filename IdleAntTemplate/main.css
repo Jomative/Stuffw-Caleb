@@ -1,0 +1,32 @@
+body{
+    font-family:MetropolisLight;
+    font-size:15px;
+    letter-spacing:0.3px;
+    overflow:hidden;
+    margin:0px;
+}
+
+#header{
+    font-size:18px;
+    display:flex;
+    background-color: rgb(61, 101, 101);
+    color:azure;/* text color */
+    align-items: center;
+}
+
+/* #header > *{
+    display: flex;
+} */
+
+#tabCont > div{
+    margin-right: 10px;
+    font-size: 32px;/*try 25px for smaller*/
+    opacity: 0.5;
+    
+}
+
+#title{
+    line-height: 50px;
+    margin-right: 20px;
+    margin-left: 20px;
+}

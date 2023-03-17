@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+      /* width:95%; */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const target = {x: 300, y: 300};  // The desired end position
+    const chain = [{x: 100, y: 100}];  // The start of the chain
+    const numJoints = 3;  // Number of joints in the chain
+    const jointLength = 50;  // Length of each joint
+
+    // Calculate the distance between two points
+    const dist = (x1, y1, x2, y2) => {
+      return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    };
+
+    // Calculate the angle between two points
+    const angle = (x1, y1, x2, y2) => {
+      return Math.atan2(y2 - y1, x2 - x1);
+    };
+
+    // Calculate the x and y coordinates of a point given an angle and distance
+    const xy = (x, y, d, a) => {
+      return {x: x + d * Math.cos(a), y: y + d * Math.sin(a)};
+    };
+
+    // Initialize the chain
+    for (let i = 0; i < numJoints; i++) {
+      const lastJoint = chain[i];
+      const a = angle(lastJoint.x, lastJoint.y, target.x, target.y);
+      const d = jointLength;
+      const nextJoint = xy(lastJoint.x, lastJoint.y, d, a);
+      chain.push(nextJoint);
+    }
+
+    // The FABRIK algorithm
+    const fabrik = () => {
+      const endEffector = chain[chain.length - 1];
+      const endEffectorDist = dist(endEffector.x, endEffector.y, target.x, target.y);
+
+      // Step 1: If the end effector is too far from the target, move it closer
+      if (endEffectorDist > jointLength) {
+        const a = angle(endEffector.x, endEffector.y, target.x, target.y);
+        chain[chain.length - 1] = xy(endEffector.x, endEffector.y, jointLength, a);
+      }
+
+      // Step 2: Work backwards from the end effector to the start of the chain
+      for (let i = chain.length - 2; i >= 0; i--) {
+        const joint = chain[i];
+        const nextJoint = chain[i + 1];
+        const jointDist = dist(joint.x, joint.y, nextJoint.x, nextJoint.y);
+        const a = angle(joint.x, joint.y, nextJoint.x, nextJoint.y, jointDist);
+        chain[i] = xy(nextJoint.x, nextJoint.y, jointDist, a);
+      }
+
+      // Step 3: Work forwards from the start of the chain to the end effector
+      for (let i = 1; i < chain.length; i++) {
+        const joint = chain[i];
+        const prevJoint = chain[i - 1];
+        const jointDist = dist(joint.x, joint.y, prevJoint.x, prevJoint.y);
+        const a = angle(prevJoint.x, prevJoint.y, joint.x, joint.y);
+        chain[i] = xy(prevJoint.x, prevJoint.y, jointDist, a);
+      }
+    };
+
+    // Draw the chain and target on the canvas
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the chain
+      ctx.beginPath();
+      ctx.moveTo(chain[0].x, chain[0].y);
+      for (let i = 1; i < chain.length; i++) {
+        ctx.lineTo(chain[i].x, chain[i].y);
+      }
+      ctx.stroke();
+
+      // Draw the target
+      ctx.fillRect(target.x - 2, target.y - 2, 4, 4);
+    };
+
+    // Animate the chain using the FABRIK algorithm
+    const animate = () => {
+      fabrik();
+      draw();
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+  </script>
+</body>
+</html>
